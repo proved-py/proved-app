@@ -3,9 +3,6 @@ PROVED
 ======
 
 
-.. image:: https://img.shields.io/pypi/v/provedapp.svg
-        :target: https://pypi.python.org/pypi/provedapp
-
 .. image:: https://img.shields.io/travis/marcopegoraro/provedapp.svg
         :target: https://travis-ci.com/marcopegoraro/provedapp
 
@@ -20,7 +17,7 @@ PROVED is a tool that enables process mining analysis on uncertain event data.
 
 
 * Free software: GNU General Public License v3
-* Documentation: https://provedapp.readthedocs.io (Coming soon.
+* Documentation: https://provedapp.readthedocs.io (Coming soon).
 
 
 Features
