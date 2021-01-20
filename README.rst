@@ -13,7 +13,7 @@ PROVED
 
 
 
-PROVED is a tool that enables process mining analysis on uncertain event data.
+The PROVED (PRocess mining OVer uncErtain Data) app is a tool that enables process mining analysis on uncertain event data. It is a Django web application interfacing with the homonym library (proved-core).
 
 
 * Free software: GNU General Public License v3
