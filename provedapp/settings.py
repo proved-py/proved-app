@@ -41,8 +41,8 @@ INSTALLED_APPS = [
 
 INSTALLED_APPS += [
     'apps.dashboard',
-    'apps.explorer',
     'apps.selector',
+    'apps.explorer',
 ]
 
 MIDDLEWARE = [
