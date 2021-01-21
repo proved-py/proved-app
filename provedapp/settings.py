@@ -39,6 +39,12 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 ]
 
+INSTALLED_APPS += [
+    'apps.dashboard',
+    'apps.explorer',
+    'apps.selector',
+]
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -121,11 +127,4 @@ STATIC_URL = '/static/'
 
 STATICFILES_DIRS = [
     BASE_DIR / 'static',
-]
-
-
-# Additional non-default applications
-INSTALLED_APPS += [
-    'apps.explorer',
-    'apps.selector',
 ]
