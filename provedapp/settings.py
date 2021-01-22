@@ -60,7 +60,7 @@ ROOT_URLCONF = 'provedapp.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': ['provedapp/templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
