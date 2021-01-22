@@ -1,3 +1,8 @@
 from django.shortcuts import render
 
-# Create your views here.
+from django.shortcuts import render
+
+
+def explorer(request):
+    context = {}
+    return render(request, 'explorer.html', context)
