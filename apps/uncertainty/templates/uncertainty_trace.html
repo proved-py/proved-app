@@ -1,0 +1,227 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content  %}
+
+
+
+<style>
+table {
+  font-family: arial, sans-serif;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+td, th {
+  border: 1px solid #dddddd;
+  text-align: left;
+  padding: 8px;
+}
+
+tr:nth-child(even) {
+  background-color: #dddddd;
+}
+
+img {
+    max-width: 100%;
+    max-height: 100%;
+}
+
+* {box-sizing: border-box;}
+
+.img-magnifier-container {
+  position: relative;
+}
+
+.img-magnifier-glass {
+  position: absolute;
+  border: 3px solid #000;
+  border-radius: 50%;
+  cursor: none;
+  /*Set the size of the magnifier glass:*/
+  width: 200px;
+  height: 200px;
+}
+</style>
+
+<div class="container-fluid">
+    <h3 class="mt-4" style="color:#00529F;">Uncertain Log Explorer</h3>
+    <div style="display: flex;">
+        <div style="width: 200px;">
+           <br>
+            <ul>
+                {% for id_var, size, n_events in variants %}
+                    {% if id_var == variant %}
+                        <li class="list-group-item list-group-item-action bg-light"><a href="/uncertainty"><strong>&lt;&lt;Variant {{id_var}}&gt;&gt;</strong></a> <br> <small>{{size}} trace(s) <br> {{n_events}} event(s)</small></li>
+                    {% else %}
+                        <li class="list-group-item list-group-item-action bg-light"><a href="/uncertainty/variant/{{id_var}}">Variant {{id_var}}</a> <br> <small>{{size}} trace(s) <br> {{n_events}} event(s)</small></li>
+                    {% endif %}
+                {% endfor %}
+            </ul>
+        </div>
+        <div style="width: 200px;">
+           <br>
+            <ul>
+                {% for id_trace, _ in traces %}
+                    {% if id_trace == trace %}
+                        <li class="list-group-item list-group-item-action bg-light"><a href="/uncertainty/variant/{{variant}}/"><strong>&lt;&lt;Trace {{id_trace}}&gt;&gt;</strong></a></li>
+                    {% else %}
+                        <li class="list-group-item list-group-item-action bg-light"><a href="/uncertainty/variant/{{variant}}/trace/{{id_trace}}">Trace {{id_trace}}</a></li>
+                    {% endif %}
+                {% endfor %}
+            </ul>
+        </div>
+        <div style="flex-grow: 1; margin: 20px;">
+            <ul class="nav nav-tabs" id="myTab" role="tablist">
+                <li class="nav-item">
+                <a class="nav-link active" id="behavior-graph-tab" data-toggle="tab" href="#behavior-graph" role="tab" aria-controls="behavior-graph" aria-selected="true">Behavior Graph</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="behavior-net-tab" data-toggle="tab" href="#behavior-net" role="tab" aria-controls="behavior-net" aria-selected="false">Behavior Net</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="gantt-tab" data-toggle="tab" href="#gantt" role="tab" aria-controls="gantt" aria-selected="false">Gantt Diagram</a>
+                </li>
+            </ul>
+            <div class="img-magnifier-container">
+                <div class="tab-content" id="myTabContent">
+                    <div class="tab-pane fade show active" id="behavior-graph" role="tabpanel" aria-labelledby="behavior-graph-tab">
+                        <img id="behavior-graph-img" src="{% static image_bg %}">
+                    </div>
+                    <div class="tab-pane fade" id="behavior-net" role="tabpanel" aria-labelledby="behavior-net-tab">
+                        <img id="behavior-net-img" src="{% static image_bn %}">
+                    </div>
+                    <div class="tab-pane fade" id="gantt" role="tabpanel" aria-labelledby="gantt-tab">
+                        <img id="gantt-img" src="{% static image_gantt %}">
+                    </div>
+                </div>
+            </div>
+            <br>
+            <br>
+            <table>
+              <tr>
+                <th>Event</th>
+                <th>Activities</th>
+                <th>Timestamp (min)</th>
+                <th>Timestamp (max)</th>
+                <th>Indeterminate</th>
+              </tr>
+                {% for event, acts, timestamp_min, timestamp_max, indet in trace_table %}
+              <tr>
+                <td>{{event}}</td>
+                <td>{{acts}}</td>
+                  {% if timestamp_min == timestamp_max %}
+                  <td colspan="2"><center>{{timestamp_min}}</center></td>
+                  {% else %}
+                  <td>{{timestamp_min}}</td>
+                  <td>{{timestamp_max}}</td>
+                  {% endif %}
+                <td>{{indet}}</td>
+              </tr>
+                {% endfor %}
+            </table>
+        </div>
+    </div>
+</div>
+
+
+
+{% endblock %}
+
+{% block script %}
+
+
+  <script>
+    <!--var token = '{{csrf_token}}';-->
+   <!--$(document).ready(function(){-->
+
+    <!--$("select.custom-select").change(function(){-->
+        <!--var selectedlog = $(this).children("option:selected").val();-->
+        <!--$.ajax({-->
+          <!--headers: { "X-CSRFToken": token },-->
+          <!--type: "POST",-->
+          <!--url: "upload_eventlog",-->
+          <!--data: { log_name: selectedlog},-->
+          <!--dataType:'json',-->
+        <!--}).done(function(result) {-->
+           <!--no_trace = result.log_attributes.no_traces-->
+           <!--$('#no_trace').text("No of traces: " + no_trace)-->
+
+           <!--no_event = result.log_attributes.no_events-->
+           <!--$('#no_event').text("No of events: " + no_event)-->
+        <!--});-->
+        <!--});-->
+    <!--});-->
+
+    $(document).ready(function(){
+      $('[data-toggle="tooltip"]').tooltip();
+    });
+
+    function magnify(imgID, zoom) {
+      var img, glass, w, h, bw;
+      img = document.getElementById(imgID);
+
+      /* Create magnifier glass: */
+      glass = document.createElement("DIV");
+      glass.setAttribute("class", "img-magnifier-glass");
+
+      /* Insert magnifier glass: */
+      img.parentElement.insertBefore(glass, img);
+
+      /* Set background properties for the magnifier glass: */
+      glass.style.backgroundImage = "url('" + img.src + "')";
+      glass.style.backgroundRepeat = "no-repeat";
+      glass.style.backgroundSize = (img.width * zoom) + "px " + (img.height * zoom) + "px";
+      bw = 3;
+      w = glass.offsetWidth / 2;
+      h = glass.offsetHeight / 2;
+
+      /* Execute a function when someone moves the magnifier glass over the image: */
+      glass.addEventListener("mousemove", moveMagnifier);
+      img.addEventListener("mousemove", moveMagnifier);
+
+      /*and also for touch screens:*/
+      glass.addEventListener("touchmove", moveMagnifier);
+      img.addEventListener("touchmove", moveMagnifier);
+      function moveMagnifier(e) {
+        var pos, x, y;
+        /* Prevent any other actions that may occur when moving over the image */
+        e.preventDefault();
+        /* Get the cursor's x and y positions: */
+        pos = getCursorPos(e);
+        x = pos.x;
+        y = pos.y;
+        /* Prevent the magnifier glass from being positioned outside the image: */
+        if (x > img.width - (w / zoom)) {x = img.width - (w / zoom);}
+        if (x < w / zoom) {x = w / zoom;}
+        if (y > img.height - (h / zoom)) {y = img.height - (h / zoom);}
+        if (y < h / zoom) {y = h / zoom;}
+        /* Set the position of the magnifier glass: */
+        glass.style.left = (x - w) + "px";
+        glass.style.top = (y - h) + "px";
+        /* Display what the magnifier glass "sees": */
+        glass.style.backgroundPosition = "-" + ((x * zoom) - w + bw) + "px -" + ((y * zoom) - h + bw) + "px";
+      }
+
+      function getCursorPos(e) {
+        var a, x = 0, y = 0;
+        e = e || window.event;
+        /* Get the x and y positions of the image: */
+        a = img.getBoundingClientRect();
+        /* Calculate the cursor's x and y coordinates, relative to the image: */
+        x = e.pageX - a.left;
+        y = e.pageY - a.top;
+        /* Consider any page scrolling: */
+        x = x - window.pageXOffset;
+        y = y - window.pageYOffset;
+        return {x : x, y : y};
+      }
+    }
+    /* magnify("behavior-net-img", 2); */
+
+  </script>
+
+
+
+
+{% endblock %}
