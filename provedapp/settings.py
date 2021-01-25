@@ -45,6 +45,13 @@ INSTALLED_APPS += [
     'apps.explorer',
 ]
 
+# Temporary apps
+INSTALLED_APPS += [
+    'apps.upload_eventlog',
+    'apps.upload_petrinet',
+    'apps.uncertainty',
+]
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
