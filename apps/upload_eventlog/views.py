@@ -11,8 +11,6 @@ from wsgiref.util import FileWrapper
 import json
 
 
-# Create your views here.
-
 def upload_page(request):
     log_attributes = {}
     event_logs_path = os.path.join(settings.MEDIA_ROOT, "event_logs")
