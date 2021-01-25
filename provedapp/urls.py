@@ -23,6 +23,11 @@ from django.conf import settings
 urlpatterns = [
     path('', include('apps.dashboard.urls')),
     # path('admin/', admin.site.urls),
+    ###
+    # Temporary routes
+    path('upload/', include('apps.upload_eventlog.urls')),
+    path('uploadpn/', include('apps.upload_petrinet.urls')),
+    path('uncertainty/', include('apps.uncertainty.urls')),
 ]
 
 if settings.DEBUG:
