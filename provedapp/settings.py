@@ -142,3 +142,7 @@ STATICFILES_DIRS = [
 MEDIA_URL = '/media/'
 
 MEDIA_ROOT = BASE_DIR / 'media'
+
+# "Old stuff" variables
+EVENT_LOG_NAME = ':notset:'
+PETRI_NET_NAME = ':notset:'
