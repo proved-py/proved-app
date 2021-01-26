@@ -30,7 +30,7 @@ def upload_page(request):
 
             return render(request, 'upload.html', {'eventlog_list': eventlogs})
 
-        elif "deleteButton" in request.POST: #for event logs
+        elif "deleteButton" in request.POST:
             if "log_list" not in request.POST:
                 return HttpResponseRedirect(request.path_info)
 
