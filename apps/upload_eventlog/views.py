@@ -64,7 +64,7 @@ def upload_page(request):
 
             return render(request, 'upload.html', {'eventlog_list': eventlogs, 'log_name': filename, 'log_attributes': log_attributes})
 
-        elif "downloadButton" in request.POST: #for event logs
+        elif "downloadButton" in request.POST:
             if "log_list" not in request.POST:
                 return HttpResponseRedirect(request.path_info)
 
