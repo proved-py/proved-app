@@ -1,7 +1,6 @@
 from django.core.files.storage import FileSystemStorage
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
-from pm4py.objects.log.importer.xes import factory as xes_importer_factory
 from django.conf import settings
 import os
 from os import listdir
@@ -11,65 +10,56 @@ from wsgiref.util import FileWrapper
 
 
 def upload_page(request):
-    log_attributes = {}
-    event_logs_path = os.path.join(settings.MEDIA_ROOT, "event_logs")
+    petri_nets_path = os.path.join(settings.MEDIA_ROOT, "petri_nets")
 
     if request.method == 'POST':
         if "uploadButton" in request.POST:
-            if "event_log" not in request.FILES:
+            if "petri_net" not in request.FILES:
                 return HttpResponseRedirect(request.path_info)
 
-            log = request.FILES["event_log"]
-            fs = FileSystemStorage(event_logs_path)
-            filename = fs.save(log.name, log)
+            net = request.FILES["petri_net"]
+            fs = FileSystemStorage(petri_nets_path)
+            filename = fs.save(net.name, net)
             uploaded_file_url = fs.url(filename)
 
-            eventlogs = [f for f in listdir(event_logs_path) if isfile(join(event_logs_path, f))]
+            petrinets = [f for f in listdir(petri_nets_path) if isfile(join(petri_nets_path, f))]
 
-            file_dir = os.path.join(event_logs_path, filename)
+            file_dir = os.path.join(petri_nets_path, filename)
 
-            return render(request, 'upload.html', {'eventlog_list': eventlogs})
+            return render(request, 'upload_pn.html', {'petrinet_list': petrinets})
 
-        elif "deleteButton" in request.POST: #for event logs
-            if "log_list" not in request.POST:
+        elif "deleteButton" in request.POST:
+            if "net_list" not in request.POST:
                 return HttpResponseRedirect(request.path_info)
 
-            filename = request.POST["log_list"]
-            if settings.EVENT_LOG_NAME == filename:
-                settings.EVENT_LOG_NAME = ":notset:"
+            filename = request.POST["net_list"]
+            if settings.PETRI_NET_NAME == filename:
+                settings.PETRI_NET_NAME = ":notset:"
 
-            eventlogs = [f for f in listdir(event_logs_path) if isfile(join(event_logs_path, f))]
+            petrinets = [f for f in listdir(petri_nets_path) if isfile(join(petri_nets_path, f))]
 
-            eventlogs.remove(filename)
-            file_dir = os.path.join(event_logs_path, filename)
+            petrinets.remove(filename)
+            file_dir = os.path.join(petri_nets_path, filename)
             os.remove(file_dir)
-            return render(request, 'upload.html', {'eventlog_list': eventlogs})
+            return render(request, 'upload_pn.html', {'petrinet_list': petrinets})
 
         elif "setButton" in request.POST:
-            if "log_list" not in request.POST:
+            if "net_list" not in request.POST:
                 return HttpResponseRedirect(request.path_info)
 
-            filename = request.POST["log_list"]
-            settings.EVENT_LOG_NAME = filename
+            filename = request.POST["net_list"]
+            settings.PETRI_NET_NAME = filename
 
-            file_dir = os.path.join(event_logs_path, filename)
+            petrinets = [f for f in listdir(petri_nets_path) if isfile(join(petri_nets_path, f))]
 
-            xes_log = xes_importer_factory.apply(file_dir)
-            no_traces = len(xes_log)
-            no_events = sum([len(trace) for trace in xes_log])
-            log_attributes['no_traces'] = no_traces
-            log_attributes['no_events'] = no_events
+            return render(request, 'upload_pn.html', {'petrinet_list': petrinets, 'net_name': filename})
 
-            eventlogs = [f for f in listdir(event_logs_path) if isfile(join(event_logs_path, f))]
-
-            return render(request, 'upload.html', {'eventlog_list': eventlogs, 'log_name': filename, 'log_attributes': log_attributes})
-
-        elif "downloadButton" in request.POST: #for event logs
-            if "log_list" not in request.POST:
+        elif "downloadButton" in request.POST:
+            if "net_list" not in request.POST:
                 return HttpResponseRedirect(request.path_info)
 
-            filename = request.POST["log_list"]
-            file_dir = os.path.join(event_logs_path, filename)
+            filename = request.POST["net_list"]
+            file_dir = os.path.join(petri_nets_path, filename)
 
             try:
                 wrapper = FileWrapper(open(file_dir, 'rb'))
@@ -80,6 +70,6 @@ def upload_page(request):
                 return None
 
     else:
-        eventlogs = [f for f in listdir(event_logs_path) if isfile(join(event_logs_path, f))]
+        petrinets = [f for f in listdir(petri_nets_path) if isfile(join(petri_nets_path, f))]
 
-        return render(request, 'upload.html', {'eventlog_list': eventlogs})
+        return render(request, 'upload_pn.html', {'petrinet_list': petrinets})

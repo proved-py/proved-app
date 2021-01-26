@@ -5,15 +5,15 @@
 
 
 <div class="container-fluid">
-    <h3 class="mt-4" style="color:#00529F;">Event Logs</h3>
+    <h3 class="mt-4" style="color:#00529F;">Petri Nets</h3>
        <br>
     <div class="row">
       <div class=" col-sm-6 col-md-7 col-lg-8">
             <form  name="load" action="" method = "POST" enctype="multipart/form-data">
                 {% csrf_token %}
 
-                <p>Event log: <input type = "file" value="fileupload" name = "event_log" /></p>
-                <p><input type = "submit" class="btn btn-primary mb-2" value = "Upload EventLog" name = "uploadButton" id ='submitresEL' /></p>
+                <p>Petri net: <input type = "file" value="fileupload" name = "petri_net" /></p>
+                <p><input type = "submit" class="btn btn-primary mb-2" value = "Upload PetriNet" name = "uploadButton" id ='submitresPN' /></p>
 
             </form>
       </div>
@@ -25,9 +25,9 @@
             <form  name="choice" action="" method = "POST">
                 {% csrf_token %}
 
-                <select name="log_list" class="custom-select" size="10">
-                    {% for eventlog in eventlog_list %}
-                        <option value="{{eventlog}}">{{eventlog}}</option>
+                <select name="net_list" class="custom-select" size="10">
+                    {% for petrinet in petrinet_list %}
+                        <option value="{{petrinet}}">{{petrinet}}</option>
                     {% endfor %}
                 </select>
 
@@ -43,16 +43,9 @@
 
      <div class="row">
       <div class=" col-sm-6 col-md-7 col-lg-8">
-        {% if log_name %}
-          <p> {{log_name}} has been set as the input ... </p>
+        {% if net_name %}
+          <p> {{net_name}} has been set as the input Petri net. </p>
         {% endif %}
-        {% for k,v in log_attributes.items %}
-          {% if k == 'no_traces' %}
-            <p id="no_trace"> No of traces: {{v}} </p>
-          {% elif k == 'no_events' %}
-            <p id="no_event"> No of events: {{v}} </p>
-          {% endif %}
-        {% endfor %}
 
       </div>
     </div>
@@ -70,12 +63,12 @@
    <!--$(document).ready(function(){-->
 
     <!--$("select.custom-select").change(function(){-->
-        <!--var selectedlog = $(this).children("option:selected").val();-->
+        <!--var selectednet = $(this).children("option:selected").val();-->
         <!--$.ajax({-->
           <!--headers: { "X-CSRFToken": token },-->
           <!--type: "POST",-->
-          <!--url: "upload_eventlog",-->
-          <!--data: { log_name: selectedlog},-->
+          <!--url: "upload_petrinet",-->
+          <!--data: { net_name: selectednet},-->
           <!--dataType:'json',-->
         <!--}).done(function(result) {-->
            <!--no_trace = result.log_attributes.no_traces-->

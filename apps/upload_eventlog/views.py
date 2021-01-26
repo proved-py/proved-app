@@ -28,7 +28,7 @@ def upload_page(request):
 
             file_dir = os.path.join(event_logs_path, filename)
 
-            return render(request, 'upload.html', {'eventlog_list': eventlogs})
+            return render(request, 'upload_el.html', {'eventlog_list': eventlogs})
 
         elif "deleteButton" in request.POST:
             if "log_list" not in request.POST:
@@ -43,7 +43,7 @@ def upload_page(request):
             eventlogs.remove(filename)
             file_dir = os.path.join(event_logs_path, filename)
             os.remove(file_dir)
-            return render(request, 'upload.html', {'eventlog_list': eventlogs})
+            return render(request, 'upload_el.html', {'eventlog_list': eventlogs})
 
         elif "setButton" in request.POST:
             if "log_list" not in request.POST:
@@ -62,7 +62,7 @@ def upload_page(request):
 
             eventlogs = [f for f in listdir(event_logs_path) if isfile(join(event_logs_path, f))]
 
-            return render(request, 'upload.html', {'eventlog_list': eventlogs, 'log_name': filename, 'log_attributes': log_attributes})
+            return render(request, 'upload_el.html', {'eventlog_list': eventlogs, 'log_name': filename, 'log_attributes': log_attributes})
 
         elif "downloadButton" in request.POST:
             if "log_list" not in request.POST:
@@ -82,4 +82,4 @@ def upload_page(request):
     else:
         eventlogs = [f for f in listdir(event_logs_path) if isfile(join(event_logs_path, f))]
 
-        return render(request, 'upload.html', {'eventlog_list': eventlogs})
+        return render(request, 'upload_el.html', {'eventlog_list': eventlogs})
