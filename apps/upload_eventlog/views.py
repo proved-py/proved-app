@@ -10,11 +10,15 @@ from django.http import HttpResponse
 from wsgiref.util import FileWrapper
 
 
-def upload_page(request):
+def upload_page(request, target_page=''):
     log_attributes = {}
     event_logs_path = os.path.join(settings.MEDIA_ROOT, "event_logs")
 
     if request.method == 'POST':
+        if "targetPage" in request.POST:
+            if request.POST['targetPage'] is not '':
+                target_page = request.POST['targetPage']
+
         if "uploadButton" in request.POST:
             if "event_log" not in request.FILES:
                 return HttpResponseRedirect(request.path_info)
@@ -28,7 +32,7 @@ def upload_page(request):
 
             file_dir = os.path.join(event_logs_path, filename)
 
-            return render(request, 'upload_el.html', {'eventlog_list': eventlogs})
+            return render(request, 'upload_el.html', {'eventlog_list': eventlogs, 'target_page': target_page})
 
         elif "deleteButton" in request.POST:
             if "log_list" not in request.POST:
@@ -43,7 +47,7 @@ def upload_page(request):
             eventlogs.remove(filename)
             file_dir = os.path.join(event_logs_path, filename)
             os.remove(file_dir)
-            return render(request, 'upload_el.html', {'eventlog_list': eventlogs})
+            return render(request, 'upload_el.html', {'eventlog_list': eventlogs, 'target_page': target_page})
 
         elif "setButton" in request.POST:
             if "log_list" not in request.POST:
@@ -62,7 +66,8 @@ def upload_page(request):
 
             eventlogs = [f for f in listdir(event_logs_path) if isfile(join(event_logs_path, f))]
 
-            return render(request, 'upload_el.html', {'eventlog_list': eventlogs, 'log_name': filename, 'log_attributes': log_attributes})
+            # return render(request, 'upload_el.html', {'eventlog_list': eventlogs, 'target_page': target_page, 'log_name': filename, 'log_attributes': log_attributes})
+            return render(request, target_page, {'eventlog_list': eventlogs, 'log_name': filename, 'log_attributes': log_attributes})
 
         elif "downloadButton" in request.POST:
             if "log_list" not in request.POST:
@@ -81,5 +86,4 @@ def upload_page(request):
 
     else:
         eventlogs = [f for f in listdir(event_logs_path) if isfile(join(event_logs_path, f))]
-
-        return render(request, 'upload_el.html', {'eventlog_list': eventlogs})
+        return render(request, 'upload_el.html', {'eventlog_list': eventlogs, 'target_page': target_page})

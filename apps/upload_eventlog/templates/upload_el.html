@@ -14,6 +14,7 @@
 
                 <p>Event log: <input type = "file" value="fileupload" name = "event_log" /></p>
                 <p><input type = "submit" class="btn btn-primary mb-2" value = "Upload EventLog" name = "uploadButton" id ='submitresEL' /></p>
+                <input type="hidden" name="targetPage" value="{{target_page}}"/>
 
             </form>
       </div>
@@ -34,6 +35,7 @@
                 <input style="margin-top: 10px;" data-toggle="tooltip" data-placement="top" title="Set as the input" type = "submit" class="btn btn-success" value = "Set" name= "setButton" id ='setButton' />
                 <input style="margin-top: 10px;" type = "submit" class="btn btn-danger" value = "Delete" name= "deleteButton" id ='deleteButton'/>
                 <input style="float: right; margin-top: 10px;" type = "submit" class="btn btn-info" value = "Download" name= "downloadButton" id ='downloadButton'/>
+                <input type="hidden" name="targetPage" value="{{target_page}}"/>
 
 
             </form>

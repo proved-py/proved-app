@@ -19,10 +19,14 @@ from proved import xes_keys
 from proved.artifacts.behavior_net import behavior_net
 from proved.artifacts.behavior_graph import behavior_graph
 
+from apps.upload_eventlog import views as upload_log_page
+
 # Create your views here.
 
 
 def uncertainty_home(request):
+    if settings.EVENT_LOG_NAME == ':notset:':
+        return upload_log_page.upload_page(request, target_page='uncertainty.html')
     event_logs_path = os.path.join(settings.MEDIA_ROOT, "event_logs")
     event_log = os.path.join(event_logs_path, settings.EVENT_LOG_NAME)
     log_name = settings.EVENT_LOG_NAME.split('.')[0]
@@ -55,6 +59,7 @@ def uncertainty_home(request):
     plt.axis('equal')
     plt.tight_layout()
     event_ratio_graph = os.path.join('uncertainty', log_name, 'event_ratio.png')
+    Path(os.path.join('static', 'uncertainty', log_name)).mkdir(parents=True, exist_ok=True)
     plt.savefig(os.path.join('static', event_ratio_graph))
     plt.clf()
     patches, texts = plt.pie([n_certain_traces, n_uncertain_traces], colors=colors, shadow=True, startangle=90, explode=explode, labels=[str(n_certain_traces) + '\n(' + str(round(n_certain_traces / (n_certain_traces + n_uncertain_traces) * 100, 2)) + '%)', str(n_uncertain_traces) + '\n(' + str(round(n_uncertain_traces / (n_certain_traces + n_uncertain_traces) * 100, 2)) + '%)'])
@@ -110,6 +115,8 @@ def uncertainty_home(request):
 
 
 def uncertainty_variant(request, variant):
+    if settings.EVENT_LOG_NAME == ':notset:':
+        return upload_log_page.upload_page(request, target_page='uncertainty_variant.html')
     event_logs_path = os.path.join(settings.MEDIA_ROOT, "event_logs")
     event_log = os.path.join(event_logs_path, settings.EVENT_LOG_NAME)
     log_name = settings.EVENT_LOG_NAME.split('.')[0]
@@ -132,17 +139,21 @@ def uncertainty_variant(request, variant):
             g.edge(''.join([act.replace(' ', '').replace(':', '') for act in bg_node1[1] if act is not None]) + str(bg_node1[0]), ''.join([act.replace(' ', '').replace(':', '') for act in bg_node2[1] if act is not None]) + str(bg_node2[0]))
         bg_render = g.render(cleanup=True)
         image_bg = os.path.join('uncertainty', log_name, 'variants', 'img_bg', 'bg' + str(variant) + '.png')
+        Path(os.path.join('static', 'uncertainty', log_name, 'variants', 'img_bg')).mkdir(parents=True, exist_ok=True)
         shutil.copyfile(bg_render, os.path.join('static', image_bg))
     image_bg = os.path.join('uncertainty', log_name, 'variants', 'img_bg', 'bg' + str(variant) + '.png')
     if not glob.glob(os.path.join(settings.STATIC_URL, 'uncertainty', log_name, 'variants', 'img_bn', 'bn' + str(variant) + '.png')):
         bn = behavior_net.BehaviorNet(bg)
         gviz = pn_vis_factory.apply(bn, bn.initial_marking, bn.final_marking, parameters={'format': 'png'})
+        Path(os.path.join('static', 'uncertainty', log_name, 'variants', 'img_bn')).mkdir(parents=True, exist_ok=True)
         pn_vis_factory.save(gviz, os.path.join('static', 'uncertainty', log_name, 'variants', 'img_bn', 'bn' + str(variant) + '.png'))
     image_bn = os.path.join('uncertainty', log_name, 'variants', 'img_bn', 'bn' + str(variant) + '.png')
     return render(request, 'uncertainty_variant.html', {'variant': variant, 'variants': variants_table, 'traces': traces_table, 'log_name': log_name, 'image_bn': image_bn, 'image_bg': image_bg})
 
 
 def uncertainty_trace(request, variant, trace):
+    if settings.EVENT_LOG_NAME == ':notset:':
+        return upload_log_page.upload_page(request, target_page='uncertainty_trace.html')
     event_logs_path = os.path.join(settings.MEDIA_ROOT, "event_logs")
     event_log = os.path.join(event_logs_path, settings.EVENT_LOG_NAME)
     log_name = settings.EVENT_LOG_NAME.split('.')[0]
@@ -165,11 +176,13 @@ def uncertainty_trace(request, variant, trace):
             g.edge(''.join([act.replace(' ', '').replace(':', '') for act in bg_node1[1] if act is not None]) + str(bg_node1[0]), ''.join([act.replace(' ', '').replace(':', '') for act in bg_node2[1] if act is not None]) + str(bg_node2[0]))
         bg_render = g.render(cleanup=True)
         image_bg = os.path.join('uncertainty', log_name, 'variants', 'img_bg', 'bg' + str(variant) + '.png')
+        Path(os.path.join('static', 'uncertainty', log_name, 'variants', 'img_bg')).mkdir(parents=True, exist_ok=True)
         shutil.copyfile(bg_render, os.path.join('static', image_bg))
     image_bg = os.path.join('uncertainty', log_name, 'variants', 'img_bg', 'bg' + str(variant) + '.png')
     if not glob.glob(os.path.join(settings.STATIC_URL, 'uncertainty', log_name, 'variants', 'img_bn', 'bn' + str(variant) + '.png')):
         bn = behavior_net.BehaviorNet(bg)
         gviz = pn_vis_factory.apply(bn, bn.initial_marking, bn.final_marking, parameters={'format': 'png'})
+        Path(os.path.join('static', 'uncertainty', log_name, 'variants', 'img_bn')).mkdir(parents=True, exist_ok=True)
         pn_vis_factory.save(gviz, os.path.join('static', 'uncertainty', log_name, 'variants', 'img_bn', 'bn' + str(variant) + '.png'))
     image_bn = os.path.join('uncertainty', log_name, 'variants', 'img_bn', 'bn' + str(variant) + '.png')
     trace_table = []
@@ -211,6 +224,7 @@ def uncertainty_trace(request, variant, trace):
     # gnt.xaxis.set_major_formatter(mdates.DateFormatter('%d-%m-%Y %H:%M:%S'))
     gnt.xaxis.set_major_formatter(mdates.DateFormatter('%d-%m-%Y'))
     fig.autofmt_xdate()
+    Path(os.path.join('static', 'uncertainty', log_name, 'traces', 'img_gantt')).mkdir(parents=True, exist_ok=True)
     plt.savefig(os.path.join('static', 'uncertainty', log_name, 'traces', 'img_gantt', 'gantt' + str(variant) + '_' + str(trace) + '.png'), bbox_inches='tight')
     plt.savefig(os.path.join('static', 'uncertainty', log_name, 'traces', 'img_gantt', 'gantt' + str(variant) + '_' + str(trace) + '.pdf'), bbox_inches='tight')
     plt.clf()
