@@ -9,10 +9,14 @@ from django.http import HttpResponse
 from wsgiref.util import FileWrapper
 
 
-def upload_page(request):
+def upload_page(request, target_page=''):
     petri_nets_path = os.path.join(settings.MEDIA_ROOT, "petri_nets")
 
     if request.method == 'POST':
+        if "targetPage" in request.POST:
+            if request.POST['targetPage'] is not '':
+                target_page = request.POST['targetPage']
+
         if "uploadButton" in request.POST:
             if "petri_net" not in request.FILES:
                 return HttpResponseRedirect(request.path_info)
@@ -26,7 +30,7 @@ def upload_page(request):
 
             file_dir = os.path.join(petri_nets_path, filename)
 
-            return render(request, 'upload_pn.html', {'petrinet_list': petrinets})
+            return render(request, 'upload_pn.html', {'petrinet_list': petrinets, 'target_page': target_page})
 
         elif "deleteButton" in request.POST:
             if "net_list" not in request.POST:
@@ -41,7 +45,7 @@ def upload_page(request):
             petrinets.remove(filename)
             file_dir = os.path.join(petri_nets_path, filename)
             os.remove(file_dir)
-            return render(request, 'upload_pn.html', {'petrinet_list': petrinets})
+            return render(request, 'upload_pn.html', {'petrinet_list': petrinets, 'target_page': target_page})
 
         elif "setButton" in request.POST:
             if "net_list" not in request.POST:
@@ -71,5 +75,4 @@ def upload_page(request):
 
     else:
         petrinets = [f for f in listdir(petri_nets_path) if isfile(join(petri_nets_path, f))]
-
-        return render(request, 'upload_pn.html', {'petrinet_list': petrinets})
+        return render(request, 'upload_pn.html', {'petrinet_list': petrinets, 'target_page': target_page})
