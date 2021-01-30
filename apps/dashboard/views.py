@@ -21,8 +21,6 @@ from proved.artifacts.behavior_graph import behavior_graph
 
 from apps.upload_eventlog import views as upload_log_page
 
-# Create your views here.
-
 
 def dashboard_home(request):
     if settings.EVENT_LOG_NAME == ':notset:':
@@ -60,14 +58,14 @@ def dashboard_home(request):
     plt.tight_layout()
     event_ratio_graph = os.path.join('dashboard', log_name, 'event_ratio.png')
     Path(os.path.join('static', 'dashboard', log_name)).mkdir(parents=True, exist_ok=True)
-    plt.savefig(os.path.join(settings.STATIC_URL, event_ratio_graph))
+    plt.savefig(os.path.join('static', event_ratio_graph))
     plt.clf()
     patches, texts = plt.pie([n_certain_traces, n_uncertain_traces], colors=colors, shadow=True, startangle=90, explode=explode, labels=[str(n_certain_traces) + '\n(' + str(round(n_certain_traces / (n_certain_traces + n_uncertain_traces) * 100, 2)) + '%)', str(n_uncertain_traces) + '\n(' + str(round(n_uncertain_traces / (n_certain_traces + n_uncertain_traces) * 100, 2)) + '%)'])
     plt.legend(patches, labels, loc="best")
     plt.axis('equal')
     plt.tight_layout()
     trace_ratio_graph = os.path.join('dashboard', log_name, 'trace_ratio.png')
-    plt.savefig(os.path.join(settings.STATIC_URL, trace_ratio_graph))
+    plt.savefig(os.path.join('static', trace_ratio_graph))
     plt.clf()
     avg_trace_len = log_len / len(log)
     activities_map = dict()
@@ -125,7 +123,7 @@ def dashboard_variant(request, variant):
     variants_table = request.session['uncertainty_summary']['variants']
     bg, traces_list = u_log.behavior_graphs_map[u_log.variants[variant][1]]
     traces_table = ((i, len(trace)) for i, trace in enumerate(traces_list))
-    if not glob.glob(os.path.join(settings.STATIC_URL, 'dashboard', log_name, 'variants', 'img_bg', 'bg' + str(variant) + '.png')):
+    if not glob.glob(os.path.join('static', 'dashboard', log_name, 'variants', 'img_bg', 'bg' + str(variant) + '.png')):
         g = Digraph('bg', format='png', filename='bg' + str(variant) + '.png')
         g.attr(rankdir='LR')
         for bg_node in bg.nodes:
@@ -138,14 +136,14 @@ def dashboard_variant(request, variant):
             g.edge(''.join([act.replace(' ', '').replace(':', '') for act in bg_node1[1] if act is not None]) + str(bg_node1[0]), ''.join([act.replace(' ', '').replace(':', '') for act in bg_node2[1] if act is not None]) + str(bg_node2[0]))
         bg_render = g.render(cleanup=True)
         image_bg = os.path.join('dashboard', log_name, 'variants', 'img_bg', 'bg' + str(variant) + '.png')
-        Path(os.path.join(settings.STATIC_URL, 'dashboard', log_name, 'variants', 'img_bg')).mkdir(parents=True, exist_ok=True)
-        shutil.copyfile(bg_render, os.path.join(settings.STATIC_URL, image_bg))
+        Path(os.path.join('static', 'dashboard', log_name, 'variants', 'img_bg')).mkdir(parents=True, exist_ok=True)
+        shutil.copyfile(bg_render, os.path.join('static', image_bg))
     image_bg = os.path.join('dashboard', log_name, 'variants', 'img_bg', 'bg' + str(variant) + '.png')
-    if not glob.glob(os.path.join(settings.STATIC_URL, 'dashboard', log_name, 'variants', 'img_bn', 'bn' + str(variant) + '.png')):
+    if not glob.glob(os.path.join('static', 'dashboard', log_name, 'variants', 'img_bn', 'bn' + str(variant) + '.png')):
         bn = behavior_net.BehaviorNet(bg)
         gviz = pn_vis_factory.apply(bn, bn.initial_marking, bn.final_marking, parameters={'format': 'png'})
-        Path(os.path.join(settings.STATIC_URL, 'dashboard', log_name, 'variants', 'img_bn')).mkdir(parents=True, exist_ok=True)
-        pn_vis_factory.save(gviz, os.path.join(settings.STATIC_URL, 'dashboard', log_name, 'variants', 'img_bn', 'bn' + str(variant) + '.png'))
+        Path(os.path.join('static', 'dashboard', log_name, 'variants', 'img_bn')).mkdir(parents=True, exist_ok=True)
+        pn_vis_factory.save(gviz, os.path.join('static', 'dashboard', log_name, 'variants', 'img_bn', 'bn' + str(variant) + '.png'))
     image_bn = os.path.join('dashboard', log_name, 'variants', 'img_bn', 'bn' + str(variant) + '.png')
     return render(request, 'dashboard_variant.html', {'variant': variant, 'variants': variants_table, 'traces': traces_table, 'log_name': log_name, 'image_bn': image_bn, 'image_bg': image_bg})
 
@@ -161,8 +159,7 @@ def dashboard_trace(request, variant, trace):
     variants_table = request.session['uncertainty_summary']['variants']
     bg, traces_list = u_log.behavior_graphs_map[u_log.variants[variant][1]]
     traces_table = ((i, len(trace)) for i, trace in enumerate(traces_list))
-    # Path(os.path.join(settings.STATIC_URL, 'dashboard', 'variant', 'img_bn', log_name)).mkdir(parents=True, exist_ok=True)
-    if not glob.glob(os.path.join(settings.STATIC_URL, 'dashboard', log_name, 'variants', 'img_bg', 'bg' + str(variant) + '.png')):
+    if not glob.glob(os.path.join('static', 'dashboard', log_name, 'variants', 'img_bg', 'bg' + str(variant) + '.png')):
         g = Digraph('bg', format='png', filename='bg' + str(variant) + '.png')
         g.attr(rankdir='LR')
         for bg_node in bg.nodes:
@@ -173,16 +170,15 @@ def dashboard_trace(request, variant, trace):
             g.node(''.join([act.replace(' ', '').replace(':', '') for act in bg_node[1] if act is not None]) + str(bg_node[0]), label=', '.join([act for act in bg_node[1] if act is not None]))
         for bg_node1, bg_node2 in bg.edges:
             g.edge(''.join([act.replace(' ', '').replace(':', '') for act in bg_node1[1] if act is not None]) + str(bg_node1[0]), ''.join([act.replace(' ', '').replace(':', '') for act in bg_node2[1] if act is not None]) + str(bg_node2[0]))
-        bg_render = g.render(cleanup=True)
         image_bg = os.path.join('dashboard', log_name, 'variants', 'img_bg', 'bg' + str(variant) + '.png')
-        Path(os.path.join(settings.STATIC_URL, 'dashboard', log_name, 'variants', 'img_bg')).mkdir(parents=True, exist_ok=True)
-        shutil.copyfile(bg_render, os.path.join(settings.STATIC_URL, image_bg))
+        Path(os.path.join('static', 'dashboard', log_name, 'variants', 'img_bg')).mkdir(parents=True, exist_ok=True)
+        g.render(os.path.join('static', image_bg), cleanup=True)
     image_bg = os.path.join('dashboard', log_name, 'variants', 'img_bg', 'bg' + str(variant) + '.png')
-    if not glob.glob(os.path.join(settings.STATIC_URL, 'dashboard', log_name, 'variants', 'img_bn', 'bn' + str(variant) + '.png')):
+    if not glob.glob(os.path.join('static', 'dashboard', log_name, 'variants', 'img_bn', 'bn' + str(variant) + '.png')):
         bn = behavior_net.BehaviorNet(bg)
         gviz = pn_vis_factory.apply(bn, bn.initial_marking, bn.final_marking, parameters={'format': 'png'})
-        Path(os.path.join(settings.STATIC_URL, 'dashboard', log_name, 'variants', 'img_bn')).mkdir(parents=True, exist_ok=True)
-        pn_vis_factory.save(gviz, os.path.join(settings.STATIC_URL, 'dashboard', log_name, 'variants', 'img_bn', 'bn' + str(variant) + '.png'))
+        Path(os.path.join('static', 'dashboard', log_name, 'variants', 'img_bn')).mkdir(parents=True, exist_ok=True)
+        pn_vis_factory.save(gviz, os.path.join('static', 'dashboard', log_name, 'variants', 'img_bn', 'bn' + str(variant) + '.png'))
     image_bn = os.path.join('dashboard', log_name, 'variants', 'img_bn', 'bn' + str(variant) + '.png')
     trace_table = []
     for i, event in enumerate(traces_list[trace]):
@@ -223,8 +219,8 @@ def dashboard_trace(request, variant, trace):
     # gnt.xaxis.set_major_formatter(mdates.DateFormatter('%d-%m-%Y %H:%M:%S'))
     gnt.xaxis.set_major_formatter(mdates.DateFormatter('%d-%m-%Y'))
     fig.autofmt_xdate()
-    Path(os.path.join(settings.STATIC_URL, 'dashboard', log_name, 'traces', 'img_gantt')).mkdir(parents=True, exist_ok=True)
-    plt.savefig(os.path.join(settings.STATIC_URL, 'dashboard', log_name, 'traces', 'img_gantt', 'gantt' + str(variant) + '_' + str(trace) + '.png'), bbox_inches='tight')
+    Path(os.path.join('static', 'dashboard', log_name, 'traces', 'img_gantt')).mkdir(parents=True, exist_ok=True)
+    plt.savefig(os.path.join('static', 'dashboard', log_name, 'traces', 'img_gantt', 'gantt' + str(variant) + '_' + str(trace) + '.png'), bbox_inches='tight')
     plt.clf()
     image_gantt = os.path.join('dashboard', log_name, 'traces', 'img_gantt', 'gantt' + str(variant) + '_' + str(trace) + '.png')
     return render(request, 'dashboard_trace.html', {'variant': variant, 'trace': trace, 'trace_table': trace_table,  'variants': variants_table, 'traces': traces_table, 'log_name': log_name, 'image_bn': image_bn, 'image_bg': image_bg, 'image_gantt': image_gantt})
