@@ -112,7 +112,6 @@ def dashboard_home(request):
     start_activities_table = [(freq_min, freq_max, round(freq_min/log_len*100, 2), round(freq_max/log_len*100, 2), activity) for freq_min, freq_max, activity in start_activities_table_abs]
     end_activities_table = [(freq_min, freq_max, round(freq_min/log_len*100, 2), round(freq_max/log_len*100, 2), activity) for freq_min, freq_max, activity in end_activities_table_abs]
     request.session['uncertainty_summary'] = {'variants': variants_table, 'log_len': log_len, 'avg_trace_len': avg_trace_len, 'activities_table': activities_table, 'start_activities_table': start_activities_table, 'end_activities_table': end_activities_table}
-    print('00000000000000000000000000000000000000000000000000000' + str(variants_table))
     return render(request, 'dashboard.html', {'variants': variants_table, 'log': log, 'log_len': log_len, 'avg_trace_len': avg_trace_len, 'activities_table': activities_table, 'start_activities_table': start_activities_table, 'end_activities_table': end_activities_table, 'event_ratio_graph': event_ratio_graph, 'trace_ratio_graph': trace_ratio_graph})
 
 
