@@ -26,8 +26,8 @@ from apps.upload_eventlog import views as upload_log_page
 
 def dashboard_home(request):
     if settings.EVENT_LOG_NAME == ':notset:':
-        return upload_log_page.upload_page(request, target_page='dashboard.html')
-        # return upload_log_page.upload_page(request, target_page='/dashboard/')
+        # return upload_log_page.upload_page(request, target_page='apps.dashboard.views.dashboard_home')
+        return upload_log_page.upload_page(request, target_page='/dashboard/')
     event_logs_path = os.path.join(settings.MEDIA_ROOT, "event_logs")
     event_log = os.path.join(event_logs_path, settings.EVENT_LOG_NAME)
     log_name = settings.EVENT_LOG_NAME.split('.')[0]
@@ -118,7 +118,7 @@ def dashboard_home(request):
 
 def dashboard_variant(request, variant):
     if settings.EVENT_LOG_NAME == ':notset:':
-        return upload_log_page.upload_page(request, target_page='dashboard_variant.html')
+        return upload_log_page.upload_page(request, target_page='/dashboard/')
     event_logs_path = os.path.join(settings.MEDIA_ROOT, "event_logs")
     event_log = os.path.join(event_logs_path, settings.EVENT_LOG_NAME)
     log_name = settings.EVENT_LOG_NAME.split('.')[0]
@@ -155,7 +155,7 @@ def dashboard_variant(request, variant):
 
 def dashboard_trace(request, variant, trace):
     if settings.EVENT_LOG_NAME == ':notset:':
-        return upload_log_page.upload_page(request, target_page='dashboard_trace.html')
+        return upload_log_page.upload_page(request, target_page='/dashboard/')
     event_logs_path = os.path.join(settings.MEDIA_ROOT, "event_logs")
     event_log = os.path.join(event_logs_path, settings.EVENT_LOG_NAME)
     log_name = settings.EVENT_LOG_NAME.split('.')[0]

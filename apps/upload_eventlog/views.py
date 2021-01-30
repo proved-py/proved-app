@@ -1,6 +1,6 @@
 from django.core.files.storage import FileSystemStorage
 from django.http import HttpResponseRedirect
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from pm4py.objects.log.importer.xes import factory as xes_importer_factory
 from django.conf import settings
 import os
@@ -67,7 +67,10 @@ def upload_page(request, target_page=''):
             eventlogs = [f for f in listdir(event_logs_path) if isfile(join(event_logs_path, f))]
 
             # return render(request, 'upload_el.html', {'eventlog_list': eventlogs, 'target_page': target_page, 'log_name': filename, 'log_attributes': log_attributes})
-            return render(request, target_page, {'eventlog_list': eventlogs, 'log_name': filename, 'log_attributes': log_attributes})
+            if target_page == '':
+                return render(request, target_page, {'eventlog_list': eventlogs, 'log_name': filename, 'log_attributes': log_attributes})
+            else:
+                return redirect(target_page)
 
         elif "downloadButton" in request.POST:
             if "log_list" not in request.POST:
