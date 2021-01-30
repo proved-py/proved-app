@@ -43,12 +43,10 @@ INSTALLED_APPS += [
     'apps.dashboard',
     'apps.selector',
     'apps.explorer',
-]
-
-# Temporary apps
-INSTALLED_APPS += [
     'apps.upload_eventlog',
     'apps.upload_petrinet',
+    'apps.udfg',
+    'apps.best_alignment',
 ]
 
 MIDDLEWARE = [
