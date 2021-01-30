@@ -24,9 +24,10 @@ from apps.upload_eventlog import views as upload_log_page
 # Create your views here.
 
 
-def uncertainty_home(request):
+def dashboard_home(request):
     if settings.EVENT_LOG_NAME == ':notset:':
-        return upload_log_page.upload_page(request, target_page='uncertainty.html')
+        return upload_log_page.upload_page(request, target_page='dashboard.html')
+        # return upload_log_page.upload_page(request, target_page='/dashboard/')
     event_logs_path = os.path.join(settings.MEDIA_ROOT, "event_logs")
     event_log = os.path.join(event_logs_path, settings.EVENT_LOG_NAME)
     log_name = settings.EVENT_LOG_NAME.split('.')[0]
@@ -58,15 +59,15 @@ def uncertainty_home(request):
     plt.legend(patches, labels, loc="best")
     plt.axis('equal')
     plt.tight_layout()
-    event_ratio_graph = os.path.join('uncertainty', log_name, 'event_ratio.png')
-    Path(os.path.join('static', 'uncertainty', log_name)).mkdir(parents=True, exist_ok=True)
+    event_ratio_graph = os.path.join('dashboard', log_name, 'event_ratio.png')
+    Path(os.path.join('static', 'dashboard', log_name)).mkdir(parents=True, exist_ok=True)
     plt.savefig(os.path.join('static', event_ratio_graph))
     plt.clf()
     patches, texts = plt.pie([n_certain_traces, n_uncertain_traces], colors=colors, shadow=True, startangle=90, explode=explode, labels=[str(n_certain_traces) + '\n(' + str(round(n_certain_traces / (n_certain_traces + n_uncertain_traces) * 100, 2)) + '%)', str(n_uncertain_traces) + '\n(' + str(round(n_uncertain_traces / (n_certain_traces + n_uncertain_traces) * 100, 2)) + '%)'])
     plt.legend(patches, labels, loc="best")
     plt.axis('equal')
     plt.tight_layout()
-    trace_ratio_graph = os.path.join('uncertainty', log_name, 'trace_ratio.png')
+    trace_ratio_graph = os.path.join('dashboard', log_name, 'trace_ratio.png')
     plt.savefig(os.path.join('static', trace_ratio_graph))
     plt.clf()
     avg_trace_len = log_len / len(log)
@@ -111,12 +112,13 @@ def uncertainty_home(request):
     start_activities_table = [(freq_min, freq_max, round(freq_min/log_len*100, 2), round(freq_max/log_len*100, 2), activity) for freq_min, freq_max, activity in start_activities_table_abs]
     end_activities_table = [(freq_min, freq_max, round(freq_min/log_len*100, 2), round(freq_max/log_len*100, 2), activity) for freq_min, freq_max, activity in end_activities_table_abs]
     request.session['uncertainty_summary'] = {'variants': variants_table, 'log_len': log_len, 'avg_trace_len': avg_trace_len, 'activities_table': activities_table, 'start_activities_table': start_activities_table, 'end_activities_table': end_activities_table}
-    return render(request, 'uncertainty.html', {'variants': variants_table, 'log': log, 'log_len': log_len, 'avg_trace_len': avg_trace_len, 'activities_table': activities_table, 'start_activities_table': start_activities_table, 'end_activities_table': end_activities_table, 'event_ratio_graph': event_ratio_graph, 'trace_ratio_graph': trace_ratio_graph})
+    print('00000000000000000000000000000000000000000000000000000' + str(variants_table))
+    return render(request, 'dashboard.html', {'variants': variants_table, 'log': log, 'log_len': log_len, 'avg_trace_len': avg_trace_len, 'activities_table': activities_table, 'start_activities_table': start_activities_table, 'end_activities_table': end_activities_table, 'event_ratio_graph': event_ratio_graph, 'trace_ratio_graph': trace_ratio_graph})
 
 
-def uncertainty_variant(request, variant):
+def dashboard_variant(request, variant):
     if settings.EVENT_LOG_NAME == ':notset:':
-        return upload_log_page.upload_page(request, target_page='uncertainty_variant.html')
+        return upload_log_page.upload_page(request, target_page='dashboard_variant.html')
     event_logs_path = os.path.join(settings.MEDIA_ROOT, "event_logs")
     event_log = os.path.join(event_logs_path, settings.EVENT_LOG_NAME)
     log_name = settings.EVENT_LOG_NAME.split('.')[0]
@@ -125,8 +127,8 @@ def uncertainty_variant(request, variant):
     variants_table = request.session['uncertainty_summary']['variants']
     bg, traces_list = u_log.behavior_graphs_map[u_log.variants[variant][1]]
     traces_table = ((i, len(trace)) for i, trace in enumerate(traces_list))
-    # Path(os.path.join(settings.STATIC_URL, 'uncertainty', 'variant', 'img_bn', log_name)).mkdir(parents=True, exist_ok=True)
-    if not glob.glob(os.path.join(settings.STATIC_URL, 'uncertainty', log_name, 'variants', 'img_bg', 'bg' + str(variant) + '.png')):
+    # Path(os.path.join(settings.STATIC_URL, 'dashboard', 'variant', 'img_bn', log_name)).mkdir(parents=True, exist_ok=True)
+    if not glob.glob(os.path.join(settings.STATIC_URL, 'dashboard', log_name, 'variants', 'img_bg', 'bg' + str(variant) + '.png')):
         g = Digraph('bg', format='png', filename='bg' + str(variant) + '.png')
         g.attr(rankdir='LR')
         for bg_node in bg.nodes:
@@ -138,22 +140,22 @@ def uncertainty_variant(request, variant):
         for bg_node1, bg_node2 in bg.edges:
             g.edge(''.join([act.replace(' ', '').replace(':', '') for act in bg_node1[1] if act is not None]) + str(bg_node1[0]), ''.join([act.replace(' ', '').replace(':', '') for act in bg_node2[1] if act is not None]) + str(bg_node2[0]))
         bg_render = g.render(cleanup=True)
-        image_bg = os.path.join('uncertainty', log_name, 'variants', 'img_bg', 'bg' + str(variant) + '.png')
-        Path(os.path.join('static', 'uncertainty', log_name, 'variants', 'img_bg')).mkdir(parents=True, exist_ok=True)
+        image_bg = os.path.join('dashboard', log_name, 'variants', 'img_bg', 'bg' + str(variant) + '.png')
+        Path(os.path.join('static', 'dashboard', log_name, 'variants', 'img_bg')).mkdir(parents=True, exist_ok=True)
         shutil.copyfile(bg_render, os.path.join('static', image_bg))
-    image_bg = os.path.join('uncertainty', log_name, 'variants', 'img_bg', 'bg' + str(variant) + '.png')
-    if not glob.glob(os.path.join(settings.STATIC_URL, 'uncertainty', log_name, 'variants', 'img_bn', 'bn' + str(variant) + '.png')):
+    image_bg = os.path.join('dashboard', log_name, 'variants', 'img_bg', 'bg' + str(variant) + '.png')
+    if not glob.glob(os.path.join(settings.STATIC_URL, 'dashboard', log_name, 'variants', 'img_bn', 'bn' + str(variant) + '.png')):
         bn = behavior_net.BehaviorNet(bg)
         gviz = pn_vis_factory.apply(bn, bn.initial_marking, bn.final_marking, parameters={'format': 'png'})
-        Path(os.path.join('static', 'uncertainty', log_name, 'variants', 'img_bn')).mkdir(parents=True, exist_ok=True)
-        pn_vis_factory.save(gviz, os.path.join('static', 'uncertainty', log_name, 'variants', 'img_bn', 'bn' + str(variant) + '.png'))
-    image_bn = os.path.join('uncertainty', log_name, 'variants', 'img_bn', 'bn' + str(variant) + '.png')
-    return render(request, 'uncertainty_variant.html', {'variant': variant, 'variants': variants_table, 'traces': traces_table, 'log_name': log_name, 'image_bn': image_bn, 'image_bg': image_bg})
+        Path(os.path.join('static', 'dashboard', log_name, 'variants', 'img_bn')).mkdir(parents=True, exist_ok=True)
+        pn_vis_factory.save(gviz, os.path.join('static', 'dashboard', log_name, 'variants', 'img_bn', 'bn' + str(variant) + '.png'))
+    image_bn = os.path.join('dashboard', log_name, 'variants', 'img_bn', 'bn' + str(variant) + '.png')
+    return render(request, 'dashboard_variant.html', {'variant': variant, 'variants': variants_table, 'traces': traces_table, 'log_name': log_name, 'image_bn': image_bn, 'image_bg': image_bg})
 
 
-def uncertainty_trace(request, variant, trace):
+def dashboard_trace(request, variant, trace):
     if settings.EVENT_LOG_NAME == ':notset:':
-        return upload_log_page.upload_page(request, target_page='uncertainty_trace.html')
+        return upload_log_page.upload_page(request, target_page='dashboard_trace.html')
     event_logs_path = os.path.join(settings.MEDIA_ROOT, "event_logs")
     event_log = os.path.join(event_logs_path, settings.EVENT_LOG_NAME)
     log_name = settings.EVENT_LOG_NAME.split('.')[0]
@@ -162,8 +164,8 @@ def uncertainty_trace(request, variant, trace):
     variants_table = request.session['uncertainty_summary']['variants']
     bg, traces_list = u_log.behavior_graphs_map[u_log.variants[variant][1]]
     traces_table = ((i, len(trace)) for i, trace in enumerate(traces_list))
-    # Path(os.path.join(settings.STATIC_URL, 'uncertainty', 'variant', 'img_bn', log_name)).mkdir(parents=True, exist_ok=True)
-    if not glob.glob(os.path.join(settings.STATIC_URL, 'uncertainty', log_name, 'variants', 'img_bg', 'bg' + str(variant) + '.png')):
+    # Path(os.path.join(settings.STATIC_URL, 'dashboard', 'variant', 'img_bn', log_name)).mkdir(parents=True, exist_ok=True)
+    if not glob.glob(os.path.join(settings.STATIC_URL, 'dashboard', log_name, 'variants', 'img_bg', 'bg' + str(variant) + '.png')):
         g = Digraph('bg', format='png', filename='bg' + str(variant) + '.png')
         g.attr(rankdir='LR')
         for bg_node in bg.nodes:
@@ -175,16 +177,16 @@ def uncertainty_trace(request, variant, trace):
         for bg_node1, bg_node2 in bg.edges:
             g.edge(''.join([act.replace(' ', '').replace(':', '') for act in bg_node1[1] if act is not None]) + str(bg_node1[0]), ''.join([act.replace(' ', '').replace(':', '') for act in bg_node2[1] if act is not None]) + str(bg_node2[0]))
         bg_render = g.render(cleanup=True)
-        image_bg = os.path.join('uncertainty', log_name, 'variants', 'img_bg', 'bg' + str(variant) + '.png')
-        Path(os.path.join('static', 'uncertainty', log_name, 'variants', 'img_bg')).mkdir(parents=True, exist_ok=True)
+        image_bg = os.path.join('dashboard', log_name, 'variants', 'img_bg', 'bg' + str(variant) + '.png')
+        Path(os.path.join('static', 'dashboard', log_name, 'variants', 'img_bg')).mkdir(parents=True, exist_ok=True)
         shutil.copyfile(bg_render, os.path.join('static', image_bg))
-    image_bg = os.path.join('uncertainty', log_name, 'variants', 'img_bg', 'bg' + str(variant) + '.png')
-    if not glob.glob(os.path.join(settings.STATIC_URL, 'uncertainty', log_name, 'variants', 'img_bn', 'bn' + str(variant) + '.png')):
+    image_bg = os.path.join('dashboard', log_name, 'variants', 'img_bg', 'bg' + str(variant) + '.png')
+    if not glob.glob(os.path.join(settings.STATIC_URL, 'dashboard', log_name, 'variants', 'img_bn', 'bn' + str(variant) + '.png')):
         bn = behavior_net.BehaviorNet(bg)
         gviz = pn_vis_factory.apply(bn, bn.initial_marking, bn.final_marking, parameters={'format': 'png'})
-        Path(os.path.join('static', 'uncertainty', log_name, 'variants', 'img_bn')).mkdir(parents=True, exist_ok=True)
-        pn_vis_factory.save(gviz, os.path.join('static', 'uncertainty', log_name, 'variants', 'img_bn', 'bn' + str(variant) + '.png'))
-    image_bn = os.path.join('uncertainty', log_name, 'variants', 'img_bn', 'bn' + str(variant) + '.png')
+        Path(os.path.join('static', 'dashboard', log_name, 'variants', 'img_bn')).mkdir(parents=True, exist_ok=True)
+        pn_vis_factory.save(gviz, os.path.join('static', 'dashboard', log_name, 'variants', 'img_bn', 'bn' + str(variant) + '.png'))
+    image_bn = os.path.join('dashboard', log_name, 'variants', 'img_bn', 'bn' + str(variant) + '.png')
     trace_table = []
     for i, event in enumerate(traces_list[trace]):
         table_row = [str(i)]
@@ -224,12 +226,9 @@ def uncertainty_trace(request, variant, trace):
     # gnt.xaxis.set_major_formatter(mdates.DateFormatter('%d-%m-%Y %H:%M:%S'))
     gnt.xaxis.set_major_formatter(mdates.DateFormatter('%d-%m-%Y'))
     fig.autofmt_xdate()
-    Path(os.path.join('static', 'uncertainty', log_name, 'traces', 'img_gantt')).mkdir(parents=True, exist_ok=True)
-    plt.savefig(os.path.join('static', 'uncertainty', log_name, 'traces', 'img_gantt', 'gantt' + str(variant) + '_' + str(trace) + '.png'), bbox_inches='tight')
-    plt.savefig(os.path.join('static', 'uncertainty', log_name, 'traces', 'img_gantt', 'gantt' + str(variant) + '_' + str(trace) + '.pdf'), bbox_inches='tight')
+    Path(os.path.join('static', 'dashboard', log_name, 'traces', 'img_gantt')).mkdir(parents=True, exist_ok=True)
+    plt.savefig(os.path.join('static', 'dashboard', log_name, 'traces', 'img_gantt', 'gantt' + str(variant) + '_' + str(trace) + '.png'), bbox_inches='tight')
+    plt.savefig(os.path.join('static', 'dashboard', log_name, 'traces', 'img_gantt', 'gantt' + str(variant) + '_' + str(trace) + '.pdf'), bbox_inches='tight')
     plt.clf()
-    image_gantt = os.path.join('uncertainty', log_name, 'traces', 'img_gantt', 'gantt' + str(variant) + '_' + str(trace) + '.png')
-    return render(request, 'uncertainty_trace.html', {'variant': variant, 'trace': trace, 'trace_table': trace_table,  'variants': variants_table, 'traces': traces_table, 'log_name': log_name, 'image_bn': image_bn, 'image_bg': image_bg, 'image_gantt': image_gantt})
-
-
-
+    image_gantt = os.path.join('dashboard', log_name, 'traces', 'img_gantt', 'gantt' + str(variant) + '_' + str(trace) + '.png')
+    return render(request, 'dashboard_trace.html', {'variant': variant, 'trace': trace, 'trace_table': trace_table,  'variants': variants_table, 'traces': traces_table, 'log_name': log_name, 'image_bn': image_bn, 'image_bg': image_bg, 'image_gantt': image_gantt})

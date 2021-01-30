@@ -49,7 +49,6 @@ INSTALLED_APPS += [
 INSTALLED_APPS += [
     'apps.upload_eventlog',
     'apps.upload_petrinet',
-    'apps.uncertainty',
 ]
 
 MIDDLEWARE = [
