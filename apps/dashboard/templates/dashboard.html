@@ -36,7 +36,7 @@ tr:nth-child(even) {
            <br>
             <ul>
                 {% for id_var, size, n_events in variants %}
-                <li class="list-group-item list-group-item-action bg-light"><a href="/uncertainty/variant/{{id_var}}">Variant {{id_var}}</a> <br> <small>{{size}} trace(s) <br> {{n_events}} event(s)</small></li>
+                <li class="list-group-item list-group-item-action bg-light"><a href="/dashboard/variant/{{id_var}}">Variant {{id_var}}</a> <br> <small>{{size}} trace(s) <br> {{n_events}} event(s)</small></li>
                 {% endfor %}
             </ul>
         </div>

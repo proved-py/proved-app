@@ -1,9 +1,11 @@
 {% extends 'base.html' %}
 {% load static %}
 
+{% block title %}
+Dashboard - Variants
+{% endblock %}
+
 {% block content  %}
-
-
 
 <style>
 table {
@@ -52,9 +54,9 @@ img {
             <ul>
                 {% for id_var, size, n_events in variants %}
                     {% if id_var == variant %}
-                        <li class="list-group-item list-group-item-action bg-light"><a href="/uncertainty"><strong>&lt;&lt;Variant {{id_var}}&gt;&gt;</strong></a> <br> <small>{{size}} trace(s) <br> {{n_events}} event(s)</small></li>
+                        <li class="list-group-item list-group-item-action bg-light"><a href="/dashboard"><strong>&lt;&lt;Variant {{id_var}}&gt;&gt;</strong></a> <br> <small>{{size}} trace(s) <br> {{n_events}} event(s)</small></li>
                     {% else %}
-                        <li class="list-group-item list-group-item-action bg-light"><a href="/uncertainty/variant/{{id_var}}">Variant {{id_var}}</a> <br> <small>{{size}} trace(s) <br> {{n_events}} event(s)</small></li>
+                        <li class="list-group-item list-group-item-action bg-light"><a href="/dashboard/variant/{{id_var}}">Variant {{id_var}}</a> <br> <small>{{size}} trace(s) <br> {{n_events}} event(s)</small></li>
                     {% endif %}
                 {% endfor %}
             </ul>
@@ -64,9 +66,9 @@ img {
             <ul>
                 {% for id_trace, _ in traces %}
                     {% if id_trace == trace %}
-                        <li class="list-group-item list-group-item-action bg-light"><a href="/uncertainty/variant/{{variant}}/"><strong>&lt;&lt;Trace {{id_trace}}&gt;&gt;</strong></a></li>
+                        <li class="list-group-item list-group-item-action bg-light"><a href="/dashboard/variant/{{variant}}/"><strong>&lt;&lt;Trace {{id_trace}}&gt;&gt;</strong></a></li>
                     {% else %}
-                        <li class="list-group-item list-group-item-action bg-light"><a href="/uncertainty/variant/{{variant}}/trace/{{id_trace}}">Trace {{id_trace}}</a></li>
+                        <li class="list-group-item list-group-item-action bg-light"><a href="/dashboard/variant/{{variant}}/trace/{{id_trace}}">Trace {{id_trace}}</a></li>
                     {% endif %}
                 {% endfor %}
             </ul>
