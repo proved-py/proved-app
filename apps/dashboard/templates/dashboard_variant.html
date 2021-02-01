@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block title %}
-Dashboard - Traces
+Dashboard - {{log_name}} - Traces
 {% endblock %}
 
 {% block content  %}
@@ -47,7 +47,7 @@ img {
 </style>
 
 <div class="container-fluid">
-    <h3 class="mt-4" style="color:#00529F;">Uncertain Log Explorer</h3>
+    <h3 class="mt-4" style="color:#00529F;">Uncertain Log Explorer - {{log_name}}</h3>
     <div style="display: flex;">
         <div style="width: 200px;">
            <br>
