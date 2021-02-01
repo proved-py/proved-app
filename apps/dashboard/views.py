@@ -30,7 +30,7 @@ def dashboard_home(request):
     log_name = settings.EVENT_LOG_NAME.split('.')[0]
     log = xes_importer_factory.apply(event_log)
     u_log = uncertain_log.UncertainLog(log)
-    variants_table = tuple((id_var, size, len(nodes_tuple)//2) for id_var, (size, nodes_tuple) in u_log.variants.items())
+    variants_table = tuple((id_var, size, len(nodes_tuple) // 2) for id_var, (size, nodes_tuple) in u_log.variants.items())
     log_len = 0
     n_certain_events = 0
     n_uncertain_events = 0
