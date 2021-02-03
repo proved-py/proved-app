@@ -4,6 +4,6 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    path('', views.alignment_home, name='alignment_home'),
-    path('best_alignment', views.best_alignment, name='best_alignment'),
+    path('', views.alignments_home, name='alignments_home'),
+    path('variant/<int:variant>', views.best_alignment, name='best_alignment'),
 ]
