@@ -134,9 +134,10 @@ def dashboard_variant(request, variant):
             g.node(''.join([act.replace(' ', '').replace(':', '') for act in bg_node[1] if act is not None]) + str(bg_node[0]), label=', '.join([act for act in bg_node[1] if act is not None]))
         for bg_node1, bg_node2 in bg.edges:
             g.edge(''.join([act.replace(' ', '').replace(':', '') for act in bg_node1[1] if act is not None]) + str(bg_node1[0]), ''.join([act.replace(' ', '').replace(':', '') for act in bg_node2[1] if act is not None]) + str(bg_node2[0]))
-        image_bg = os.path.join('dashboard', log_name, 'variants', 'img_bg', 'bg' + str(variant) + '.png')
+        image_bg = os.path.join('dashboard', log_name, 'variants', 'img_bg', 'bg' + str(variant))
         Path(os.path.join('static', 'dashboard', log_name, 'variants', 'img_bg')).mkdir(parents=True, exist_ok=True)
         g.render(os.path.join('static', image_bg), cleanup=True)
+        image_bg += '.png'
     image_bg = os.path.join('dashboard', log_name, 'variants', 'img_bg', 'bg' + str(variant) + '.png')
     if not glob.glob(os.path.join('static', 'dashboard', log_name, 'variants', 'img_bn', 'bn' + str(variant) + '.png')):
         bn = behavior_net.BehaviorNet(bg)
