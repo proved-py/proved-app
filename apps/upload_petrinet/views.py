@@ -1,6 +1,6 @@
 from django.core.files.storage import FileSystemStorage
 from django.http import HttpResponseRedirect
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.conf import settings
 import os
 from os import listdir
@@ -56,7 +56,10 @@ def upload_page(request, target_page=''):
 
             petrinets = [f for f in listdir(petri_nets_path) if isfile(join(petri_nets_path, f))]
 
-            return render(request, 'upload_pn.html', {'petrinet_list': petrinets, 'net_name': filename})
+            if target_page == '':
+                return render(request, target_page, {'petrinet_list': petrinets, 'log_name': filename})
+            else:
+                return redirect(target_page)
 
         elif "downloadButton" in request.POST:
             if "net_list" not in request.POST:
