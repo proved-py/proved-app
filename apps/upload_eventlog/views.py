@@ -66,7 +66,6 @@ def upload_page(request, target_page=''):
 
             eventlogs = [f for f in listdir(event_logs_path) if isfile(join(event_logs_path, f))]
 
-            # return render(request, 'upload_el.html', {'eventlog_list': eventlogs, 'target_page': target_page, 'log_name': filename, 'log_attributes': log_attributes})
             if target_page == '':
                 return render(request, target_page, {'eventlog_list': eventlogs, 'log_name': filename, 'log_attributes': log_attributes})
             else:
