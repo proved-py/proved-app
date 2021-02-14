@@ -1,0 +1,30 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<log>
+  <trace>
+    <string key="concept:name" value="327"/>
+    <event>
+      <string key="concept:name" value="NightSweats"/>
+      <date key="time:timestamp" value="2011-07-05T12:00:00+00:00"/>
+    </event>
+    <event>
+      <string key="concept:name" value="PrTP"/>
+      <date key="time:timestamp" value="2011-07-08T12:00:00+00:00"/>
+      <list key="u:concept:name">
+        <values>
+          <int key="PrTP" value="0"/>
+          <int key="SecTP" value="0"/>
+        </values>
+      </list>
+    </event>
+    <event>
+      <string key="concept:name" value="Splenomeg"/>
+      <date key="time:timestamp" value="2011-07-07T12:00:00+00:00"/>
+      <date key="u:time:timestamp_min" value="2011-07-04T12:00:00+00:00"/>
+      <date key="u:time:timestamp_max" value="2011-07-10T12:00:00+00:00"/>
+    </event>
+    <event>
+      <string key="concept:name" value="Adm"/>
+      <date key="time:timestamp" value="2011-07-12T12:00:00+00:00"/>
+    </event>
+  </trace>
+</log>
