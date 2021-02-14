@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pnml>
+   <net id="net1" type="http://www.pnml.org/version-2009/grammar/pnmlcoremodel">
+      <page id="n0">
+         <place id="n1">
+            <name>
+               <text>p1</text>
+            </name>
+            <initialMarking>
+               <text>1</text>
+            </initialMarking>
+         </place>
+         <place id="n2">
+            <name>
+               <text>p2</text>
+            </name>
+         </place>
+         <place id="n3">
+            <name>
+               <text>p3</text>
+            </name>
+         </place>
+         <place id="n4">
+            <name>
+               <text>p4</text>
+            </name>
+         </place>
+         <place id="n5">
+            <name>
+               <text>p5</text>
+            </name>
+         </place>
+         <place id="n6">
+            <name>
+               <text>p6</text>
+            </name>
+         </place>
+         <place id="n7">
+            <name>
+               <text>p7</text>
+            </name>
+         </place>
+         <place id="n8">
+            <name>
+               <text>p8</text>
+            </name>
+         </place>
+         <transition id="NightSweats">
+            <name>
+               <text>NightSweats</text>
+            </name>
+         </transition>
+         <transition id="Splenomeg">
+            <name>
+               <text>Splenomeg</text>
+            </name>
+         </transition>
+         <transition id="PrTP">
+            <name>
+               <text>PrTP</text>
+            </name>
+         </transition>
+         <transition id="Adm">
+            <name>
+               <text>Adm</text>
+            </name>
+         </transition>
+         <transition id="t1">
+            <name>
+               <text>t1</text>
+            </name>
+            <toolspecific tool="ProM" version="6.4" activity="$invisible$" localNodeID="0b719242-f463-45ca-a1bf-4698d09f18fc"/>
+         </transition>
+         <transition id="t2">
+            <name>
+               <text>t2</text>
+            </name>
+            <toolspecific tool="ProM" version="6.4" activity="$invisible$" localNodeID="b8e44fb5-3e13-4dd8-98ed-40ca218599b5"/>
+         </transition>
+         <arc id="arc1" source="n1" target="t1"></arc>
+         <arc id="arc2" source="t1" target="n2"></arc>
+         <arc id="arc3" source="t1" target="n3"></arc>
+         <arc id="arc4" source="n2" target="NightSweats"></arc>
+         <arc id="arc5" source="n3" target="Splenomeg"></arc>
+         <arc id="arc6" source="NightSweats" target="n4"></arc>
+         <arc id="arc7" source="Splenomeg" target="n5"></arc>
+         <arc id="arc8" source="n4" target="t2"></arc>
+         <arc id="arc9" source="n5" target="t2"></arc>
+         <arc id="arc10" source="t2" target="n6"></arc>
+         <arc id="arc11" source="n6" target="PrTP"></arc>
+         <arc id="arc12" source="PrTP" target="n7"></arc>
+         <arc id="arc13" source="n7" target="Adm"></arc>
+         <arc id="arc14" source="Adm" target="n8"></arc>
+      </page>
+      <finalmarkings>
+         <marking>
+            <place idref="n8">
+               <text>1</text>
+            </place>
+         </marking>
+      </finalmarkings>
+   </net>
+</pnml>
