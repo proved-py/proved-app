@@ -1,16 +1,6 @@
-======
-PROVED
-======
-
-
-.. image:: https://img.shields.io/travis/marcopegoraro/provedapp.svg
-        :target: https://travis-ci.com/marcopegoraro/provedapp
-
-.. image:: https://readthedocs.org/projects/provedapp/badge/?version=latest
-        :target: https://provedapp.readthedocs.io/en/latest/?badge=latest
-        :alt: Documentation Status
-
-
+================================================
+PROVED (PRocess mining OVer uncErtain Data)
+================================================
 
 
 The PROVED (PRocess mining OVer uncErtain Data) app is a tool that enables process mining analysis on uncertain event data. It is a Django web application interfacing with the homonym library (proved-core).
@@ -23,7 +13,26 @@ The PROVED (PRocess mining OVer uncErtain Data) app is a tool that enables proce
 Features
 --------
 
-* TODO
+* Upload and download of uncertain event logs
+* Uncertain data explorer
+* Conformance checking through alignments on uncertain event data
+
+
+Installation
+------------
+
+PROVED is a Django application compatible with Python 3.6+. Download the repository, enter the main folder and type
+
+``pip install proved``
+
+to install the requirements from PyPi.
+
+The application can be started with
+
+``python manage.py runserver``
+
+the application will start on the port 8000, and will be accessible from any web browser.
+
 
 Credits
 -------
